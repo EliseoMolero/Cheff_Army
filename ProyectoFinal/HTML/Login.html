@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Inicio</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+        <link href="../CSS/Estilo-Login.css" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    </head> 
+    <script>
+        function comprobar(){
+            var usu = $('#usuario').val();
+            var con = $('#password').val();
+
+            if(con == "" || usu == ""){
+                alert("Debe rellenar todos los campos");
+            }else{
+                if(!usu.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$")){
+                    alert("El email no es valido");
+                }else{
+                    if(usu != 'pilar@gmail.com' || con != 'qqq'){
+                        alert("No se encuentra registrado");
+                    }else{
+                        alert("Se encuentra registrado");    
+                    }
+                }
+            }
+        } 
+    </script>
+    <body>       
+        <div class="ini">
+            <form>
+                <input type="text" class="inicio" name="usuario" placeholder="Usuario" id='usuario' value=""/>
+                <input type="password" class="inicio" name="password" placeholder="Contraseña" id='password' value=""/>
+                <input type="button" name="iniciar" value="Iniciar Sesión" id='iniciar' onclick="comprobar()"/>
+                <a id="en" href="Registro.html">Registrate gratis</a>
+            </form>
+        </div>
+    </body>
+</html>
+
