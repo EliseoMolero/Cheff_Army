@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Principal</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link href="../CSS/estilo-portada.css" rel="stylesheet" type="text/css"/>
+        
+    </head>
+    <script>
+        
+        function cargar(){
+            
+            var array = ["Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","Paco Pepe","Carne con patatas","../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg"];
+             
+            var estilo = "width: 50%";
+            
+            $("#fila1").append("<div class='col-sm-3'><img src='"+array[2]+"' style='"+estilo+"'><h3>"+array[1]+"</h3><p>"+array[0]+"</p></div>");
+            $("#fila1").append("<div class='col-sm-3'><img src='"+array[5]+"' style='"+estilo+"'><h3>"+array[4]+"</h3><p>"+array[3]+"</p></div>");
+            $("#fila1").append("<div class='col-sm-3'><img src='"+array[8]+"' style='"+estilo+"'><h3>"+array[7]+"</h3><p>"+array[6]+"</p></div>");
+            $("#fila1").append("<div class='col-sm-3'><img src='"+array[11]+"' style='"+estilo+"'><h3>"+array[10]+"</h3><p>"+array[9]+"</p></div>");
+            
+            $("#fila2").append("<div class='col-sm-3'><img src='"+array[14]+"' style='"+estilo+"'><h3>"+array[13]+"</h3><p>"+array[12]+"</p></div>");
+            $("#fila2").append("<div class='col-sm-3'><img src='"+array[17]+"' style='"+estilo+"'><h3>"+array[16]+"</h3><p>"+array[15]+"</p></div>");
+            $("#fila2").append("<div class='col-sm-3'><img src='"+array[20]+"' style='"+estilo+"'><h3>"+array[19]+"</h3><p>"+array[18]+"</p></div>");
+            $("#fila2").append("<div class='col-sm-3'><img src='"+array[23]+"' style='"+estilo+"'><h3>"+array[22]+"</h3><p>"+array[21]+"</p></div>");
+            
+            $("#fila3").append("<div class='col-sm-3'><img src='"+array[26]+"' style='"+estilo+"'><h3>"+array[25]+"</h3><p>"+array[24]+"</p></div>");
+            $("#fila3").append("<div class='col-sm-3'><img src='"+array[29]+"' style='"+estilo+"'><h3>"+array[28]+"</h3><p>"+array[27]+"</p></div>");
+            $("#fila3").append("<div class='col-sm-3'><img src='"+array[32]+"' style='"+estilo+"'><h3>"+array[31]+"</h3><p>"+array[30]+"</p></div>");
+            $("#fila3").append("<div class='col-sm-3'><img src='"+array[35]+"' style='"+estilo+"'><h3>"+array[34]+"</h3><p>"+array[33]+"</p></div>");
+            
+        }
+        
+    </script>
+    <body onload="cargar()">
+        <div class="container-fluid">
+            <div class="row" id="fila1">
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row" id="fila2">
+            </div>
+        </div>  
+        <div class="container-fluid">
+            <div class="row" id="fila3">
+            </div>
+        </div>      
+    </body>
+</html>
+
+
+
+
+   <!-- <body>
+        <div class="container-fluid">
+            <div class="row" id="fila1">
+                <div class="col-sm-3">
+                    <img src="../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg" alt="Sandwich" style="width: 50%">
+                    <h3>Carne con patatas</h3>
+                    <p>Paco Pepe</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/450_1000.jpg" alt="Steak" style="width: 50%">
+                    <h3>Pan con tomate</h3>
+                    <p>Er yoni</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/comida.jpg" alt="Cherries" style="width: 50%">
+                    <h3>Hambureguesa con frutas</h3>
+                    <p>Ozé</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/Lasana-bolonesa-corte.jpg" alt="Pasta and Wine" style="width: 50%">
+                    <h3>Lasaña de carne</h3>
+                    <p>Horse Luis</p>
+
+                </div>
+            </div>
+            <div class="row" id="fila1">
+                <div class="col-sm-3">
+                    <img src="../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg" alt="Sandwich" style="width: 50%">
+                    <h3>Carne con patatas</h3>
+                    <p>Paco Pepe</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/450_1000.jpg" alt="Steak" style="width: 50%">
+                    <h3>Pan con tomate</h3>
+                    <p>Er yoni</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/comida.jpg" alt="Cherries" style="width: 50%">
+                    <h3>Hambureguesa con frutas</h3>
+                    <p>Ozé</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/Lasana-bolonesa-corte.jpg" alt="Pasta and Wine" style="width: 50%">
+                    <h3>Lasaña de carne</h3>
+                    <p>Horse Luis</p>
+
+                </div>
+            </div>
+            <div class="row" id="fila1">
+                <div class="col-sm-3" >
+                    <img src="../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg" alt="Sandwich" style="width: 50%">
+                    <h3>Carne con patatas</h3>
+                    <p>Paco Pepe</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/450_1000.jpg" alt="Steak" style="width: 50%" >
+                    <h3>Pan con tomate</h3>
+                    <p>Er yoni</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/comida.jpg" alt="Cherries" style="width: 50%">
+                    <h3>Hambureguesa con frutas</h3>
+                    <p>Ozé</p>
+                </div>
+                <div class="col-sm-3">
+                    <img src="../Imagenes/Lasana-bolonesa-corte.jpg" alt="Pasta and Wine" style="width: 50%">
+                    <h3>Lasaña de carne</h3>
+                    <p>Horse Luis</p>
+                </div>
+            </div>
+        </div>    
+    </body>-->

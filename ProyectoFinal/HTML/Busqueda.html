@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <script>
+        
+        function resultados(){
+            var result = [["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","esta es la descripcion de el plato que llega de la base de datos"],["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","esta es la descripcion de el plato que llega de la base de datos"],["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","esta es la descripcion de el plato que llega de la base de datos"]];
+            alert(result[0][0]+"//"+result[0][1]+"//"+result[0][2]+"//"+result[1][0]+"//"+result[1][1]+"//"+result[1][2]+"//"+result[2][0]+"//"+result[2][1]+"//"+result[2][2]);
+            var val = "ESOOOOOOOOO";
+            
+            var clase1 = "well caja form-group";
+            var estilo = "overflow-x:auto";
+            var row = "row";
+            var col2 = "col-sm-2";
+            var estilo2 = "max-width: 150px";
+            var responsive = "img-responsive"; 
+            var col10 = "col-sm-10";
+            
+            $("#busqueda").text(val);
+            if(result.length<1){
+                $("#resultadosdiv").append("<div class='"+clase1+"' style='"+estilo+"'><div class='"+row+"'><h4>No se han encontrado resultados</h4></div></div>");
+            }else{
+                for(var i=0;i<result.length;i++){
+                    $("#resultadosdiv").append("<div class='"+clase1+"' style='"+estilo+"'><div class='"+row+"'><div class='"+col2+"'><img src='"+result[i][0]+"' style='"+estilo2+"' class='"+responsive+"'/></div><div class='"+col10+"'><h4>"+result[i][1]+"</h4><p>"+result[i][2]+"</p></div></div></div>");    
+                }
+            }
+        }
+        
+        function llamada(){
+            resultados();
+        }
+        
+        function busqueda(aaaaa){
+            var s = aaaaa;
+            esoo(s);
+        }
+        
+        var l = 0;
+        function esoo(s){
+            var z = l+s;
+            l=z;
+            alert(l);
+        }
+   
+    </script>
+    <body onload="llamada()">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="resultadosdiv">
+                    <h1 style="text-align: left; color:grey">Resultado busqueda: <span id="busqueda" style="color:black"></span></h1><br>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

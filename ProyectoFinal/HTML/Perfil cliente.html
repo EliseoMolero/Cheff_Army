@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <script>
+        
+        function imagen(){
+            var img = "../Imagenes/lenovo-logog.png";
+            var estilo = "width: 60%; height: auto;"
+            
+            $("#imagen").append("<img src='"+img+"' style='"+estilo+"'>");
+        }
+        
+        function ulpedidos(){
+            var result = ["../Imagenes/comida-kawaii-22-800x519.jpg","Tallarines kawai","../Imagenes/comida-kawaii-22-800x519.jpg","Tallarines kawai","../Imagenes/comida-kawaii-22-800x519.jpg","Tallarines kawai"];
+            
+            if(result.length<1){
+                $("#ulped").append("<tr><th>¿Todavia no has pedido nada?</th></tr>");
+            }else{
+                $("#ulped").append("<tr><th>Últimos platos pedidos</th></tr>");
+                var clase = "img-responsive";
+                
+                for(var i=0;i<result.length;i=i+2){
+                    $("#ulped").append("<tr><td><img src='"+result[i]+"' class='"+clase+"'/><p>"+result[i+1]+"</p></td></tr>");    
+                }
+            }
+        }
+        
+        function infopersonal(){
+            var result = ["pepe","pepe","pepe","pepe","pepe","pepe","pepe","pepe","pepe","pepe"];
+            $("#nombre").text(result[0]);
+            $("#apellidos").text(result[1]);
+            $("#dni").text(result[2]);
+            $("#edad").text(result[3]);
+            $("#calle").text(result[4]);
+            $("#provincia").text(result[5]);
+            $("#numero").text(result[6]);
+            $("#cp").text(result[7]);
+            $("#pais").text(result[8]);
+            $("#localidad").text(result[9]);
+
+        }
+        
+        function infopersonalguardada(result){
+            alert(result);
+            cancelar();
+            $("#nombre").text(result[0]);
+            $("#apellidos").text(result[1]);
+            $("#dni").text(result[2]);
+            $("#edad").text(result[3]);
+            $("#calle").text(result[4]);
+            $("#provincia").text(result[5]);
+            $("#numero").text(result[6]);
+            $("#cp").text(result[7]);
+            $("#pais").text(result[8]);
+            $("#localidad").text(result[9]);
+            
+            $("#cambio").text("Editar");
+            $("#cancel").hide();
+            
+            $("input").val("");
+            $("input").attr("style","display: none");
+        }
+        
+        function edit(){
+            var estado = $("#cambio").text();
+            if(estado=="Editar"){
+                $("#nombre").hide();
+                $("#apellidos").hide();
+                $("#dni").hide();
+                $("#edad").hide();
+                $("#calle").hide();
+                $("#provincia").hide();
+                $("#numero").hide();
+                $("#cp").hide();
+                $("#pais").hide();
+                $("#localidad").hide();
+            
+                $("input").attr("style","display: inline");
+                $("#cambio").text("Guardar");
+                $("#cancel").show();
+            }else{
+                comprobaciones();
+            }
+        }
+        
+        function comprobaciones(){
+            var nombre = $("#nombreinput").val();
+            var apellidos = $("#apellidosinput").val();
+            var dni = $("#dniinput").val();
+            dni = dni.toUpperCase();
+            var edad = $("#edadinput").val();
+            var calle = $("#calleinput").val();
+            var provincia = $("#provinciainput").val();
+            var numero = $("#numeroinput").val();
+            var cp = $("#cpinput").val();
+            var pais = $("#paisinput").val();
+            var localidad = $("#localidadinput").val();
+            
+            var patron = /^[a-zA-Z ñÑ.áÁéÉíÍóÓúÚäëïöü\'-]*$/;
+            var patroncp = /(^([0-9]{5,5})|^)$/;
+            
+            if(nombre == "" || apellidos == "" || dni == "" || edad == ""){                               
+                alert("Los campos de nombre, apellidos, dni y edad deben introducirse");
+            }else{
+                if(!patron.test(nombre)){
+                    alert("El nombre no es valido");
+                }else{
+                    if(!patron.test(apellidos)){
+                        alert("Los apellidos no son validos");
+                    }else{
+                        var vdni = nif(dni);
+                        if(vdni == null){ 
+                            alert("El dni no es valido");
+                        }else if(vdni == false){
+                            alert("La letra del dni no es valida");
+                        }else{            
+                            if(!patron.test(calle)){
+                                alert("La calle no es válida");
+                            }else{
+                                if(!patron.test(provincia)){
+                                    alert("La provincia no es válida");
+                                }else{
+                                    if(!patron.test(pais)){
+                                        alert("El pais no es válido");
+                                    }else{
+                                        if(!patron.test(localidad)){
+                                            alert("La localidad no es válida");
+                                        }else{
+                                            if(edad>80 || edad<15){
+                                                alert("La edad no es valida");
+                                            }else{
+                                                if(!patroncp.test(cp)){
+                                                    alert("El codigo postal no es válido");
+                                                }else{
+                                                    var result = [nombre, apellidos,dni,edad,calle,provincia,numero,cp,pais,localidad];
+                                                    infopersonalguardada(result);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        function nif(dni) {
+            var patrondni;
+            patrondni = /^\d{8}[a-zA-Z]$/;
+ 
+            if(patrondni.test (dni) == true){
+                var numero = dni.substr(0,dni.length-1);
+                var letr = dni.substr(dni.length-1,1);
+                 numero = numero % 23;
+                var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+                letra=letra.substring(numero,numero+1);
+                if (letra!=letr.toUpperCase()) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return null;
+            }
+        }       
+        
+        function cancelar(){
+            $("#nombre").show();
+            $("#apellidos").show();
+            $("#dni").show();
+            $("#edad").show();
+            $("#calle").show();
+            $("#provincia").show();
+            $("#numero").show();
+            $("#cp").show();
+            $("#pais").show();
+            $("#localidad").show();
+            
+            $("input").attr("style","display: none");
+            $("#cambio").text("Editar");
+            $("#cancel").hide();
+        }
+        
+        function llamadas(){
+            $("#cancel").hide();
+            imagen();
+            ulpedidos();
+            infopersonal();
+        }
+    
+    </script>
+    <body onload="llamadas()">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="well caja"  style="text-align: center;" id="imagen">
+<!--       IMAGEN PERFIL       -->                        
+                    </div>
+                    
+                    <div class="well table-responsive caja">
+                        <table class="table" id="ulped">
+<!--       ULTIMOS PEDIDOS       -->
+                        </table> 
+                    </div>
+                </div>
+
+                <div class="col-sm-10">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                <tr>
+                                    <th colspan="8"><h1>Datos personales</h1></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="row">
+                                    <td><p class="datos" >Nombre:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-1"><input type="text" name="nombre" style="display: none" class="form-control input" id="nombreinput"><label class="label1" id="nombre"></label></td>
+                                    <td></td>
+                                    <td><p class="datos">DNI:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="DNI"  style="display: none" class="form-control input" id="dniinput"><label class="label1" id="dni"></label></td>
+                                </tr>
+                                <tr class="row">
+                                    <td><p class="datos">Apellidos:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="apellidos"  style="display: none" class="form-control input" id="apellidosinput"><label class="label1" id="apellidos"></label></td>
+                                    <td></td>
+                                    <td><p class="datos">Edad:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="number" name="edad"  style="display: none" class="form-control input" id="edadinput"><label class="label1" id="edad"></label></td>
+                                </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+                    
+                    <div class="well caja  form-group" style="overflow-x:auto">
+                        <form>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th colspan="7"><h1>Dirección</h1></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><p class="datos">Calle:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="calle"  style="display: none" class="form-control input" id="calleinput"><label class="label1" id="calle"></label></td>
+                                    <td></td>
+                                    <td><p class="datos">Provincia:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="provincia"  style="display: none" class="form-control input" id="provinciainput"><label class="label1" id="provincia"></label></td>
+                                </tr>
+                                <tr>
+                                    <td><p class="datos">Número:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="numero"  style="display: none" class="form-control input" id="numeroinput"><label class="label1" id="numero"></label></td>
+                                    <td></td>
+                                    <td><p class="datos">CP:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="cp"  style="display: none" class="form-control input" id="cpinput"><label class="label1" id="cp"></label></td>
+                                </tr>
+                                <tr>
+                                    <td><p class="datos">Localidad:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="localidad"  style="display: none" class="form-control input" id="localidadinput"><label class="label1" id="localidad"></label></td>
+                                    <td></td>
+                                     <td><p class="datos">País:</p></td>
+                                     <td></td>
+                                    <td class="col-xs-6"><input type="text" name="pais"  style="display: none" class="form-control input" id="paisinput"><label class="label1" id="pais"></label></td>
+                                </tr>
+                                <tr>
+                                   <td colspan="7" style="text-align: right"><button type="button" id="cambio" class=" btn btn-primary" onclick="edit()">Editar</button></td>
+                                   <td></td>
+                                   <td colspan="7" style="text-align: right"><button type="button" id="cancel" class=" btn btn-primary" onclick="cancelar()">Cancelar</button></td>
+                                </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
