@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <script src="../Javascript/script.js" type="text/javascript"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="well caja"  style="text-align: center;">
+                        <img src="../Imagenes/personne.png" alt="Perfil" style=" width: 60%; height: auto;">
+                    </div>
+                    <div class="well table-responsive caja">
+                        <table class="table">
+                            <tr>
+                                <th>Últimos pedidos</th>
+                            </tr>
+                            <tr>
+                                <td><img src="../Imagenes/3090372.jpg" alt="" class="img-responsive"/>
+                                    <p>León come gambas</p></td>
+                            </tr>
+
+                            <tr>
+                                <td><img src="../Imagenes/comida-kawaii-22-800x519.jpg" alt="" class="img-responsive"/>
+                                    <p>Tallarines kawai</p></td>
+                            </tr>
+                        </table> 
+                    </div>
+                </div>
+
+                <div class="col-sm-10">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                <tr>
+                                    <th colspan="8"><h1>Datos personales</h1></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="row">
+                                    <td><p class="datos" >Nombre:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-1"><input type="text" name="nombre"  style="display: none" class="form-control input"><label class="label1">Ozze</label></td>
+                                    <td></td>
+                                    <td><p class="datos">DNI:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="DNI"  style="display: none" class="form-control input"><label class="label1">Ozze</label></td>
+
+                                </tr>
+                                
+                                <tr class="row">
+                                    <td><p class="datos">Apellidos</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="apellidos"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                    <td></td>
+                                     <td><p class="datos">Edad</p></td>
+                                     <td></td>
+                                    <td class="col-xs-6"><input type="number" name="edad"  style="display: none" class="form-control input"><label class="label1">Ozze</label></td>
+
+                                </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+
+                    </div>
+                    <div class="well caja  form-group" style="overflow-x:auto">
+                        <form>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th colspan="7"><h1>Dirección</h1></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><p class="datos">Calle:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="calle"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                    <td></td>
+                                    <td><p class="datos">Provincia</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="provincia"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                </tr>
+                                <tr>
+                                    <td><p class="datos">Número</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="numero"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                    <td></td>
+                                    <td><p class="datos">CP</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="cp"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                </tr>
+                                <tr>
+                                    <td><p class="datos">Localidad:</p></td>
+                                    <td></td>
+                                    <td class="col-xs-6"><input type="text" name="localidad"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                    <td></td>
+                                     <td><p class="datos">País:</p></td>
+                                     <td></td>
+                                    <td class="col-xs-6"><input type="text" name="pais"  style="display: none" class="form-control input" ><label class="label1">Ozze</label></td>
+                                </tr>
+                               <tr>
+                                   <td colspan="7" style="text-align: right"> <button type="button" id="cambio" class=" btn btn-primary">Editar</button></td>
+                                </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+</html>
