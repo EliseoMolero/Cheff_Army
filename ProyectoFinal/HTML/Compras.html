@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+
+        <title>Web Page Design</title>
+    </head>
+    <body>
+        <header>
+            <div class="row" style="margin-right: 0px;">
+                <div class="col-sm-12 well">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil chef.html">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Login.html">Loguear</a></li>
+                                            <li role="presentation"><button role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</button></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class=" table-responsive caja well">
+                        <table id="tablascript" class="table" >
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class=" table-responsive caja well">
+                        <div class="form-group">
+                            <p>Forma de pago</p>
+                            <label class="radio-inline"><input type="radio" name="metodo_pago">Visa</label>
+                            <label class="radio-inline"><input type="radio" name="metodo_pago">Efectivo</label>
+                            <br>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <p>Forma de entrega</p>
+                            <label class="radio-inline"><input type="radio" name="metodo_envio">Recoger</label>
+                            <label class="radio-inline"> <input type="radio" name="metodo_envio">Llevar a domicilio</label>
+                            <label class="radio-inline"> <input type="radio" name="metodo_envio">Cocina a domicilio</label>
+                            <br><br>
+                        </div>
+                        <input type="submit" class="btn btn-default" value="Comprar">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+        <script>
+            function generarTabla() {
+                var datos = [["vij", "iviv", "hona", "eoicno"], ["iuviu", "iubi", "eoin", "ebev"], ["uyvyuv", "iuubn", "eono", "wiobeib"], ["ieubi", "ierub", "iweub", "owerv"], ["rezre", "uytg", "iweoubiu", "owieuebniuow"]];
+                for (var i = 0; i < datos.length; i++) {
+                    $('#tablascript').append("<tr id='" + i + "'></tr>");
+
+                    for (var j = 0; j < datos[i].length; j++) {
+                        $("#" + i).append("<td>" + datos[i][j] + "</td>");
+                    }
+                }
+            }
+            generarTabla();
+        </script>
+    </body>
+</html>
