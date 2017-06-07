@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Registro</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+        <link href="../CSS/Estilo-Registro.css" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    
+    <script>
+        function insertar(){
+            var usu = $('#usuario').val();
+            var con = $('#password').val();
+            var recon = $('#repassword').val();
+            var nomb = $('#nombre').val();
+            var ape = $('#apellidos').val();
+            var dni = $('#dni').val();
+            dni = dni.toUpperCase(dni);
+            var edad = $('#edad').val();
+            
+            var patron = /^[a-zA-Z ñÑ.áÁéÉíÍóÓúÚäëïöü\'-]*$/;
+
+            if(con == "" || recon == "" || usu == "" || nomb=="" || ape=="" || dni=="" || edad==""){
+                alert("Debe rellenar todos los campos");
+            }else{
+                if(!usu.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$")){
+                    alert("El email no es valido");
+                }else{
+                    if(!patron.test(nomb)){
+                        alert("El nombre no es valido");
+                    }else{
+                        if(!patron.test(ape)){
+                            alert("Los apellidos no son validos");
+                        }else{
+                            var vdni = nif(dni);
+                            if(vdni == null){ 
+                                alert("El dni no es valido");
+                            }else if(vdni == false){
+                                alert("La letra del dni no es valida");
+                            }else{
+                                if(edad>80 || edad<15){
+                                    alert("La edad no es valida");
+                                }else{
+                                    if(con != recon){
+                                        alert("No coincide la contraseña");
+                                    }else{
+                                        alert("Usuario registrado");    
+                                    }   
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        function nif(dni) {
+            var patrondni;
+            patrondni = /^\d{8}[a-zA-Z]$/;
+ 
+            if(patrondni.test (dni) == true){
+                var numero = dni.substr(0,dni.length-1);
+                var letr = dni.substr(dni.length-1,1);
+                 numero = numero % 23;
+                var letra='TRWAGMYFPDXBNJZSQVHLCKET';
+                letra=letra.substring(numero,numero+1);
+                if (letra!=letr.toUpperCase()) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return null;
+            }
+        }       
+        
+    </script>
+    </head>
+    
+    <body> 
+        <div class="reg">
+            <form>
+                <input type="email" class="inicio" name="usuario" placeholder="Usuario" id='usuario'/>
+                <input type="password" class="inicio" name="password" placeholder="Contraseña" id='password'/>
+                <input type="password" class="inicio" name="repassword" placeholder="Confirmar Contraseña" id='repassword'/>
+                <hr/>
+                <input type="text" class="inicio" name="nombre" placeholder="Nombre" id='nombre'>
+                <input type="text" class="inicio" name="apellidos" placeholder="Apellidos" id='apellidos'>
+                <input type="text" class="inicio" name="dni" placeholder="DNI" id='dni'>
+                <input type="number" class="inicio" name="edad" placeholder="Edad" id='edad'>
+                <hr/>
+                <div class="check">
+                    Cliente<input type="radio" checked class="inicio" name="radio" id='cliente'>
+                    Chef<input type="radio" class="inicio" name="radio" id='chef'>
+                </div>
+                
+                <input type="button" name="Enviar" value="Enviar" id='Enviar' onclick="insertar()"/>
+                <a id="en" href="ProtoLogin.html">Volver al inicio</a>
+            </form>
+        </div>
+    </body>
+</html>
+

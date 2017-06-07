@@ -1,0 +1,866 @@
+
+<html>
+    <head>
+        <title>Perfil Chef</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>   
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> <!-- DA FUNCIONALIDAD AL MENU DEL HEADER-->
+    
+    <script>
+    
+/////////////////////////////////////////////////////////////////////////METODOS PARA CARGAR TODOS LOS ELEMENTOS EN LA PAGINA///////////////////////////////////////////////////////////        
+        
+    var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);
+                    cargarChef();
+                } else {
+                    console.log('not logged in');
+                    location.href = "Login.html";
+                }
+            });
+
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+    
+     function cargarChef() {
+                //var uid = firebase.auth().currentUser.uid;
+                firebase.database().ref('/chefs/id_usuario1').once('value').then(function (snapshot) {
+                    infochef(snapshot.val().nombre, snapshot.val().descripcion, snapshot.val().direccion);
+                    modalidad(snapshot.val().modalidad);
+                    atender(snapshot.val().cps_distribucion);
+                    horario(snapshot.val().horario);
+                    console.log(snapshot.val().platos);
+                    cargarplatos(snapshot.val().platos);
+                    var estilo = "width: 60%; height: auto;";
+                    $("#imagen").append("<img src='"+snapshot.val().urlImagen+"' style='"+estilo+"'>");
+                });
+            }
+        
+        
+        ///FUNCION QUE CARGA LAS MODALIDADES DE ENVIO: RECOGER, ENVIO, CHEF EN CASA///
+    function modalidad(result){
+        for(var i=0;i<result.length;i++){
+            $("#modo").append("<tr id='modo"+i+"'><td>"+result[i]+"</td></tr>");
+        }
+    }
+        
+        
+        ///FUNCION QUE CARGA LOS CODIGOS POSTALES A LOS QUE ATIENDE EL CHEF///
+        var g = 1;
+    function atender(result){
+        for(var i=0;i<result.length;i++){
+            $("#cpatend").append("<tr><td id='cp"+g+"'>"+result[i]+"</td></tr>");
+            g++;
+        }
+    }
+
+        ///FUNCION QUE CARGA LOS HORARIOS QUE ATIENDE - EXISTEN DOS "Lunes-viernes/Sabado-domingo" Y POR DIA///
+    function horario(result){
+        //var result = ["Por dia","12:00-14:00 / 20:00-24:00","12:00-14:00 / 20:00-24:00","12-14 / 20-24","12-14 / 20-24","12-14 / 20-24","12-14 / 20-24","12-14 / 20-24"];<!--//["Lunes-viernes/Sabado-domingo", "10-11 y 22-00", "11-14 y 22-00"];-->
+        
+        if(result[0] == "Lunes-viernes/Sabado-domingo"){
+            $("#horario").append("<tr id='ho1'><td>Lunes - viernes:<br>"+result[1]+"</td></tr>");
+            $("#horario").append("<tr id='ho2'><td>Sabado - domingo:<br>"+result[2]+"</td></tr>");
+        }else{ 
+            var dias = ["Lunes:","Martes:","Miercoles:","Jueves:","Viernes:","Sabado:","Domingo:"];
+            for(var i=1;i<result.length;i++){
+                $("#horario").append("<tr id='ho"+i+"'><td>"+dias[i-1]+"<br>"+result[i]+"</td></tr>");
+            }
+        }
+    }
+     
+        
+        ///FUNCION QUE CARGA EL NOMBRE, LA DESCRIPCION Y LA DIRECCION DEL CHEF///
+    function infochef(nombre, descripcion, direccion){
+        //var result = ["pepe","Fusce convallis, mauris imperdiet gravida bibendum, nisl turpis suscipit mauris, sed placerat ipsum urna sed risus. In convallis tellus a mauris. Curabitur non elit ut libero tristique sodales. Mauris a lacus. Donec mattis semper leo. In hac habitasse platea dictumst. Vivamus facilisis diam at odio. Mauris dictum, nisi eget consequat elementum, lacus ligula molestie metus, non feugiat orci magna ac sem. Donec turpis. Donec vitae metus. Morbi tristique neque eu mauris. Quisque gravida ipsum non sapien. Proin turpis lacus, scelerisque vitae, elementum at, lobortis ac, quam. Aliquam dictum eleifend risus. In hac habitasse platea dictumst. Etiam sit amet diam. Suspendisse odio. Suspendisse nunc. In semper bibendum libero.","Calle Carcel y Espinosa Nº000"];
+        
+        $("#nombre").text("Chef "+nombre);
+        $("#descripcion").text(descripcion);
+        $("#direccion").text(direccion);
+    }
+        
+
+        ///FUNCION PARA CARGAR LOS PLATOS QUE LLEGAN DE LA BASE DE DATOS EN EL HTML///
+    var j = 1;
+    function cargarplatos(platos){
+        var arraykeys = Object.keys(platos);
+        
+        ///ESTA ES LA BUENA PARA LOS PLATOS
+        for(var i=0;i<arraykeys.length;i++){
+            firebase.database().ref('/chefs/id_usuario1/platos/'+arraykeys[i]).once('value').then(function (snapshot) {
+                $("#platos").append("<tr id='plato"+j+"'><td><ul class='list-unstyled list-inline'><li><img id='src"+j+"' src='"+snapshot.val().urlimagen_plato+"' style='max-width: 150px'/></li><li style='margin-left:1%;'><p id='nombrepl"+j+"'>"+snapshot.val().nombre_plato+"</p></li><li style='margin-left:1%;'><p id='descripcionpl"+j+"' title='"+snapshot.val().descripcion+"'>?</p></li><li style='margin-left:1%;'><p id='precio"+j+"'>"+snapshot.val().precio+"</p></li><li style='margin-left:1%;'><input type='number' id='cantidad"+j+"' class='form-control input-sm' onchange='calculartotalplato("+j+")'></li><li style='margin-left:1%;'><input type='checkbox'></li><li style='margin-left:1%;'><p id='preciototal"+j+"'>Precio total: 0€</p></li></td></tr>"); 
+                j++;
+            });
+        }
+    }    
+    
+        ///FUNCION QUE CALCULA EL PRECIO TOTAL DE CADA PLATO, QUE ES LLAMADA CON LA FUNCION ONCHANGE EN CADA INPUT DE CANTIDAD///
+    function calculartotalplato(j){
+        var nprecio = "#precio"+j;
+        var precio = $(nprecio).text();
+        var ncantidad = "#cantidad"+j;
+        var cantidad = $(ncantidad).val();
+        var npreciototal = "#preciototal"+j;
+        
+        var calculo = precio*cantidad;
+        $(npreciototal).text("Precio total: "+calculo+"€");
+    }
+        
+        
+////////////////////////////////////////////////////////////////////////////////////////METODOS QUE SE ACCIONAN PARA LA EDICION DE LOS ELEMENTOS//////////////////////////////////////////////////////         
+                
+///EL NOMBRE Y LA FOTO NO SON EDITABLES PUES SE DEBEN MODIFICAR DESDE EL PERFIL DE CLIENTE///
+        
+        
+        ///FUNCION PARA AGREGAR LOS INPUT DONDE EL CHEF AÑADIRÁ LOS CODIGOS POSTALES // LA VARIABLE QUE ESTA FUERA DE LA FUNCION ES LA QUE AÑADE EL ID DE CADA IMPUT PARA DESPUES PODER TOMAR LOS VALORES///   
+    function agregarcp(){
+        $("#cpatend").append("<tr><td><input style='width:100%;' id='cp"+g+"' type='number'></td></tr>");
+        g++;
+    }
+    
+        ///FUNCION PARA CARGAR LOS ELEMENTOS DONDE INDICAR EL HORARIO, QUE DEPENDEN DE SI ELIGEN POR DIAS O LUNES-VIERNES/SABADO-DOMINGO///
+    var k = 1;    
+    function horar(ho){
+        
+        if(ho == "pordias"){
+            $(".LS").hide();
+            $(".PD").show();
+        }else{
+            $(".LS").show();
+            $(".PD").hide();
+        }
+    }     
+        
+        ///FUNCION PARA AGREGAR LOS INPUT PARA PODER INTRODUCIR LOS DATOS DE UN NUEVO PLATO///
+    var p = 1;    
+    function agregarplatos(){
+        $("#platos").append("<tr id='platoe"+p+"'><td><ul class='list-unstyled list-inline'><li><img id='src"+p+"' src='' style='max-width: 150px'/></li><li style='margin-bottom: 2%; width:100%;'><input type='file' id='imagenplato"+p+"' style='width:98%;'></li><br><li style='margin-bottom: 2%; width:100%;'><input placeholder='Nombre del plato' id='nombreplato"+p+"' type='text' style='width:98%;'></li><br><li style='margin-bottom: 2%; width:100%;'><textarea id='descripcionplato"+p+"' style='resize:none' placeholder='Descripcion del plato e ingredientes' cols='120' rows='5'></textarea></li><br><li style='margin-bottom: 2%; width:100%;'><input type='text' style='width:30%;' placeholder='Indique el precio' id='precioplato"+p+"'></li><li><button onclick='eliminar(platoe"+p+")'>Eliminar plato</button></li></td></tr>");
+        p++;
+    }     
+        
+    function eliminar(e){
+        e.remove();
+    }
+        
+    
+    ///////////////////////////////FUNCION QUE ESCONDE LAS ETIQUETAS CON LOS DATOS Y MUESTRA LOS ELEMENTOS NECESARIOS PARA LA EDICION ----- HE INICIA LA FUNCION PARA RECOGER LOS DATOS
+    function edit(){
+        var estado = $("#cambio").text();
+        if(estado == "Editar"){
+            
+            //modo envio//
+            $("#checkrecoger").show();
+            $("#checkenvio").show();
+            $("#checkchef").show();
+            
+            var cantidadmodo = document.getElementById('modo').getElementsByTagName('tr').length;
+            if(cantidadmodo == 5){
+                $("#modo0").hide();
+            }
+            if(cantidadmodo == 6){
+                $("#modo0").hide();
+                $("#modo1").hide();
+            }
+            if(cantidadmodo == 7){
+                $("#modo0").hide();
+                $("#modo1").hide();
+                $("#modo2").hide();
+            }
+            
+            //codigopostal//
+            $("#filabotoncp").show();       
+            var cantidadcp = document.getElementById('cpatend').getElementsByTagName('tr').length;          ///SE COMPRUEBAN LOS ELEMENTOS CP QUE HAY    
+            cantidadcp = cantidadcp - 2;
+            var s = 0;
+            
+            while(s<cantidadcp){   ///SE GENERAN TANTOS INPUT COMO CP Y SE MUESTRAN LOS DATOS EN LOS INPUT
+                s++;
+                $("#cp"+s+"").hide();
+                $("#cpatend").append("<tr><td><input style='width:100%;' id='cp"+s+"' type='number' value='"+$("#cp"+s+"").text()+"'></td></tr>");
+            }
+            
+            //platos//
+            var cantidadplatos = document.getElementById('platos').getElementsByTagName('tr').length;
+            var d = 0;
+            
+            while(d<cantidadplatos){
+                d++;
+                $("#plato"+d+"").hide();
+                var titulo = $("#descripcionpl"+d+"").attr('title');
+                $("#platos").append("<tr id='platoe"+p+"'><td><ul class='list-unstyled list-inline'><li><img id='src"+p+"' src='"+$("#src"+d+"").attr('src')+"' style='max-width: 150px'/></li><li style='margin-bottom: 2%; width:100%;'><input type='file' id='imagenplato"+p+"' style='width:98%;'></li><br><li style='margin-bottom: 2%; width:100%;'><input placeholder='Nombre del plato' value='"+$("#nombrepl"+d+"").text()+"' id='nombreplato"+p+"' type='text' style='width:100%;'></li><br><li style='margin-bottom: 2%; width:100%;'><textarea id='descripcionplato"+p+"' style='resize:none; width: 100%;' placeholder='Descripcion del plato e ingredientes' rows='5'></textarea></li><br><li style='margin-bottom: 2%; width:100%;'><input type='text' style='width:30%;' placeholder='Indique el precio' value='"+$("#precio"+d+"").text()+"' id='precioplato"+p+"'></li><li><button onclick='eliminar(platoe"+p+")'>Eliminar plato</button></li></td></tr>");
+                $("#descripcionplato"+d+"").val(titulo);
+                $("#plato"+d+"").remove();
+                p++;
+            }
+            $("#filabotonplatos").show();
+            
+            //descripcion//
+            $("#descripcion").hide();
+            $("#cajadescripcion").show();
+            $("#cajadescripcion").val($("#descripcion").text());
+            
+            //horario - radio buton para seleccionar tipo//
+            $("#radiobu").show();
+            var cantidadho = document.getElementById('horario').getElementsByTagName('tr').length; 
+            
+            if(cantidadho == 18){
+                $("#ho1").hide();
+                $("#ho2").hide();
+                $("#ho3").hide();
+                $("#ho4").hide();
+                $("#ho5").hide();
+                $("#ho6").hide();
+                $("#ho7").hide();
+            }else{
+                $("#ho1").hide();
+                $("#ho2").hide();
+            }
+
+            //direccion//
+            $("#direccion").hide();
+            $("#cajadireccion").show();
+            $("#cajadireccion").val($("#direccion").text());
+            
+            //cambiar nombre boton y mostrar boton cancelar//
+            $("#cambio").text("Guardar");
+            $("#cancel").show();
+        }else{
+            obtencionycomprobaciondatos();
+        }
+    }            
+        
+    ///////////////////////////////////////////////////////////////////////////FUNCION QUE RECOGE TODO LOS VALORES Y LOS COMPRUEBA
+   
+   
+    function guardarChef(descripcion,direccion,modo,cp,horario,platos) {
+        //alert(result);
+        var uid = firebase.auth().currentUser.uid;
+        firebase.database().ref('chefs/id_usuario1').update({
+            descripcion: descripcion,
+            direccion: direccion,
+            modalidad: modo,
+            horario: horario,
+            cps_distribucion: cp
+        });
+        
+       firebase.database().ref('chefs/id_usuario1/platos').once('value').then(function (snapshot) {
+          var arraykeys = Object.keys(snapshot.val());
+          console.log(arraykeys);
+          for(var i=0;i<arraykeys.length;i++){
+            firebase.database().ref('chefs/id_usuario1/platos/'+arraykeys[i]).set({
+                descripcion: null,
+                precio: null,
+                nombre_plato: null,
+                urlimagen_plato: null
+            });
+          }
+          
+          for(var i=0;i<arraykeys.length;i++){
+            firebase.database().ref('platos/'+arraykeys[i]).set({
+                descripcion: null,
+                precio: null,
+                nombre_plato: null,
+                urlimagen_plato: null,
+                autor: null
+            });
+          }
+          
+          for (var s=0;s<platos.length;s++){
+            firebase.database().ref('chefs/id_usuario1/platos/id_plato'+s).set({
+                descripcion: platos[s][2],
+                precio: platos[s][3],
+                nombre_plato: platos[s][1],
+                urlimagen_plato: platos[s][0]
+            });
+            conseguirUrl(platos[s][0],s);
+            
+            firebase.database().ref('platos/id_plato'+s).set({
+                descripcion: platos[s][2],
+                precio: platos[s][3],
+                nombre_plato: platos[s][1],
+                urlimagen_plato: platos[s][0],
+                autor: "id_usuario1"
+            });
+            conseguirUrl2(platos[s][0],s);
+          }
+          
+       }).then(function(){
+           location.reload();
+       }); 
+    }
+    
+    function conseguirUrl(posicion,s) {                                                         
+        //console.log("nombre de la imagen: " + file.name);
+        var src = $('#src'+posicion).attr('src');
+        console.log("El src es " + src);
+        var file = document.getElementById("imagenplato"+posicion).files[0];
+        
+        if (file == undefined) {
+            firebase.database().ref().child('chefs/id_usuario1/platos/id_plato' + s).update({"urlimagen_plato": src});
+        }else{
+            var storageRef = firebase.storage().ref();
+            var uploadTask = storageRef.child(file.name).put(file);
+
+            uploadTask.on('state_changed', function (snapshot) {
+
+            }, function (error) {
+                alert("Fallo al subir la imagen");
+            }, function () {
+
+                storageRef.child(file.name).getDownloadURL().then(function (url) {
+                    var uid = firebase.auth().currentUser.uid;
+                    firebase.database().ref().child('chefs/id_usuario1/platos/id_plato' + s).update({"urlimagen_plato": url});
+                });
+            });    
+        }                             
+    }
+    
+    function conseguirUrl2(posicion,s) {                                                         
+        //console.log("nombre de la imagen: " + file.name);
+        var src = $('#src'+posicion).attr('src');
+        var file = document.getElementById("imagenplato"+posicion).files[0];
+        
+        if (file == undefined) {
+            firebase.database().ref().child('platos/id_plato' + s).update({"urlimagen_plato": src});
+        }else{
+            var storageRef = firebase.storage().ref();
+            var uploadTask = storageRef.child(file.name).put(file);
+
+            uploadTask.on('state_changed', function (snapshot) {
+
+            }, function (error) {
+                alert("Fallo al subir la imagen");
+            }, function () {
+
+                storageRef.child(file.name).getDownloadURL().then(function (url) {
+                    var uid = firebase.auth().currentUser.uid;
+                    firebase.database().ref().child('platos/id_plato' + s).update({"urlimagen_plato": url});
+                });
+            });    
+        } 
+    }
+   
+   
+    function obtencionycomprobaciondatos(){
+        
+        //RECOGER VALORES DE LA DESCRIPCION Y DE LA DIRECCION//
+        var descripcion = $("#cajadescripcion").val();
+        var direccion = $("#cajadireccion").val();
+        
+        if(descripcion == "" || direccion == "" || /^\s+$/.test(descripcion) || /^\s+$/.test(direccion)){
+            alert("Debe rellenar los campos de dirección y la descripcion");
+            return;
+        }
+        
+        //OBTENCION DE LOS CHECKBOX DE MODO QUE ESTAN SELECCIONADOS Y AÑADIDOS A ARRAY//
+        var modo = [];
+        var f = 0;
+        
+        if($("#checkrec").is(':checked')){
+            modo[f] = 'Recoger';
+            f++;
+        }
+        if($("#checkenv").is(':checked')){
+            modo[f] = 'Envio';
+            f++;
+        }
+        if($("#checkche").is(':checked')){
+            modo[f] = 'Chef en casa';
+            f++;
+        }
+        if(f==0){
+            alert("Debe seleccionar al menos una modalidad");
+            return;
+        }
+        
+        //OBTENCION DE LOS CODIGOS POSTALES Y AÑADIDOS A UN ARRAY//
+        var cantidadcp = document.getElementById('cpatend').getElementsByTagName('input').length;
+        var cp = [];
+        var b = 0;
+        var v = 0;
+        var vacio = 0;
+        var patroncp = /(^([0-9]{5,5})|^)$/;
+        
+        while(b<cantidadcp-1){
+            b++;
+            if($("input#cp"+b).val()!=""){
+                if(!patroncp.test($("input#cp"+b).val())){
+                    alert("Codigo postal numero "+b+" erroneo");
+                    return;
+                }
+                cp[v] = $("input#cp"+b+"").val();
+                v++;
+                
+            }else{
+                vacio++;
+            }
+        }
+        
+        if((cantidadcp-1)==vacio){
+            alert("Debe indicar al menos un codigo postal");
+            return;
+        }
+        
+        //OBTENCION DE MODELO DE HORARIO Y VALORES//
+        var horario = [];
+        var m = 1;
+        var patrontiempo = /^([0-1][0-9]|2[0-3]):([0-5][0-9])$/;
+        
+        if(!$("#pordias").is(':checked') && !$("#pordos").is(':checked')){
+            alert("Debe seleccionar una organizacion de horario y rellenar todos los campos");
+        }
+        
+        if($("#pordias").is(':checked')){
+            horario[0] = 'Por dia';
+            var nu = 3;
+            while(nu<10){
+                if(!patrontiempo.test($("#hora"+nu+"1").val())||!patrontiempo.test($("#hora"+nu+"2").val())||!patrontiempo.test($("#horc"+nu+"1").val())||!patrontiempo.test($("#horc"+nu+"2").val())){
+                    alert("error en el tiempo");
+                    return;
+                }else{
+                    horario[m] = $("#hora"+nu+"1").val()+"-"+$("#hora"+nu+"2").val()+" / "+$("#horc"+nu+"1").val()+"-"+$("#horc"+nu+"2").val();
+                    nu++;
+                    m++;
+                }
+            }
+        }else{
+            horario[0] = 'Lunes-viernes/Sabado-domingo';
+            var nu = 1;
+            while(nu<3){
+                if(!patrontiempo.test($("#hora"+nu+"1").val())||!patrontiempo.test($("#hora"+nu+"2").val())||!patrontiempo.test($("#horc"+nu+"1").val())||!patrontiempo.test($("#horc"+nu+"2").val())){
+                    alert("error en el tiempo");
+                    return;
+                }else{
+                    horario[m] = $("#hora"+nu+"1").val()+"-"+$("#hora"+nu+"2").val()+" / "+$("#horc"+nu+"1").val()+"-"+$("#horc"+nu+"2").val();
+                    nu++;
+                    m++;
+                }
+            }
+        }       
+        
+        //OBTENCION DE LOS PLATOS//
+        var eso = $("#platos").children();
+        var platos = [];
+        var patron = /^[a-zA-Z ñÑ.áÁéÉíÍóÓúÚäëïöü\'-]*$/;
+        var patronprecio = /^[0-9]+([,][0-9]+)?$/;
+        for(var i=0;i<eso.length;i++){
+            var array = $(eso[i]).attr('id').split('e');
+            
+            var src = $('#src'+array[1]).attr('src');
+            var file = document.getElementById("imagenplato"+array[1]).files[0];
+            var imagenplato = file;
+            var nombreplato = $("#nombreplato"+array[1]).val();
+            var descripcionplato = $("#descripcionplato"+array[1]).val();
+            var precioplato = $("#precioplato"+array[1]).val();
+            if(imagenplato == "" || nombreplato == "" || descripcionplato == "" || precioplato == ""){
+                alert("debe rellenar todos los campos de cada plato");
+                return;
+            }else{
+                if(!patron.test(nombreplato)){
+                   alert("Error en el nombre del plato numero "+(i+1));
+                    return;
+                }else{
+                    if(!patron.test(descripcionplato)){
+                       alert("Error en la descripcion del plato numero "+(i+1));
+                        return;
+                    }else{
+                        if(!patronprecio.test(precioplato)){
+                           alert("Error en el precio del plato numero "+(i+1)+". Recuerde que si el numero es decimal se debe escribir con coma. Ejemplo correcto: '5,95'.");
+                            return;
+                        }else{
+                            if (file == undefined && src == '') {                             
+                                alert("Debe elegir una imagen para el plato");
+                                return;
+                            }else{
+                                platos[i] = [array[1],nombreplato,descripcionplato,precioplato];
+                            }
+                        }
+                    }
+                }
+            }      
+        }
+        
+        guardarChef(descripcion,direccion,modo,cp,horario,platos);
+        
+        
+        
+        console.log(descripcion);
+        console.log(direccion);  
+        for(var i=0;i<modo.length;i++){
+            console.log(modo[i]);    
+        }
+        for(var i=0;i<cp.length;i++){
+            console.log(cp[i]);    
+        }
+        for(var i=0;i<horario.length;i++){
+            console.log(horario[i]);    
+        }
+        
+        for(var i=0;i<platos.length;i++){
+            console.log(platos[i]);    
+        }
+            
+    } 
+        
+    function llamadas(){
+        $("#cancel").hide();
+        $("#checkrecoger").hide();
+        $("#checkenvio").hide();
+        $("#checkchef").hide();
+        $("#filabotoncp").hide();
+        $("#filabotonplatos").hide();
+        $("#cajadescripcion").hide();
+        $("#cajadireccion").hide();
+        $("#radiobu").hide();
+        $(".LS").hide();
+        $(".PD").hide();
+    }
+    
+    </script>
+    </head>
+    <body onload="llamadas()">
+        <header>
+            <div class="row" style="margin-right: 0px;">
+                <div class="col-sm-12 well">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="buscador" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil chef.html">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Login.html">Loguear</a></li>
+                                            <li role="presentation"><button role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</button></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    
+                    <div class="well caja"  style="text-align: center;">
+                        <button type="button" id="cambio" class="btn btn-primary" onclick="edit()">Editar</button>
+                        <button type="button" style="margin-top:5%;" id="cancel" class="btn btn-primary" onclick="window.location.reload()">Cancelar</button>                
+                    </div>
+                    
+        <!--DIV DE LA IMAGEN --> 
+                    <div class="well caja"  style="text-align: center;" id="imagen">                    
+                    </div>
+                    
+        <!--DIV DE MODALIDAD --> 
+                    <div class="well table-responsive caja">
+                        <table class="table" id="modo">
+                            <tr>
+                                <th>Modalidad:</th>
+                            </tr>
+                            <tr id="checkrecoger">
+                                <td><input type="checkbox" id="checkrec" style="margin-right:10%">Recoger<td>
+                            </tr>
+                            <tr id="checkenvio">
+                                <td><input type="checkbox" id="checkenv" style="margin-right:10%">Envio<td>
+                            </tr>
+                            <tr id="checkchef">
+                                <td><input type="checkbox" id="checkche" style="margin-right:10%">Chef en casa<td>
+                            </tr>
+                        </table> 
+                    </div>
+                    
+        <!--DIV DE LOS CODIGOS POSTALES-->           
+                    <div class="well table-responsive caja">
+                        <table class="table" id="cpatend">
+                            <tr>
+                                <th>Codigos postales a los que atiende:</th>
+                            </tr>
+                            <tr id="filabotoncp">
+                                <td><input type="button" onclick="agregarcp()" value="Añadir" id="botoncp"></td>
+                            </tr>
+                        </table> 
+                    </div>
+                    
+        <!--DIV DEL HORARIO --> 
+                    <div class="well table-responsive caja">
+                        <table class="table" id="horario">
+                            <tr>
+                                <th>Horario:</th>
+                            </tr>
+                            <tr>
+                                <td id="radiobu">
+                                    <input type="radio" name="hor" id="pordos" value="pordos" onchange="horar('pordos')">L-V/S-D<br>
+                                    <input type="radio" name="hor" id="pordias" value="pordias" onchange="horar('pordias')">Por Día<br>   
+                               </td>
+                            </tr>
+                            <tr class="LS"><td><b>Lunes - viernes:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora11' type='time'><br> a <input style='width:89%;' id='hora12' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc11' type='time'><br> a <input style='width:89%;' id='horc12' type='time'></td></tr>
+                            
+                            <tr class="LS"><td><b>Sabado - domingo:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora21' type='time'><br> a <input style='width:89%;' id='hora22' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc21' type='time'><br> a <input style='width:89%;' id='horc22' type='time'></td></tr>
+                            
+                            
+                            
+                            <tr class="PD"><td><b>Lunes:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora31' type='time'><br> a <input style='width:89%;' id='hora32' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc31' type='time'><br> a <input style='width:89%;' id='horc32' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Martes:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora41' type='time'><br> a <input style='width:89%;' id='hora42' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc41' type='time'><br> a <input style='width:89%;' id='horc42' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Miercoles:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora51' type='time'><br> a <input style='width:89%;' id='hora52' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc51' type='time'><br> a <input style='width:89%;' id='horc52' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Jueves:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora61' type='time'><br> a <input style='width:89%;' id='hora62' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc61' type='time'><br> a <input style='width:89%;' id='horc62' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Viernes:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora71' type='time'><br> a <input style='width:89%;' id='hora72' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc71' type='time'><br> a <input style='width:89%;' id='horc72' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Sabado:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora81' type='time'><br> a <input style='width:89%;' id='hora82' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc81' type='time'><br> a <input style='width:89%;' id='horc82' type='time'></td></tr>
+                            
+                            <tr class="PD"><td><b>Domingo:</b><br><br>Almuerzo
+                            <input style='width:100%;margin-bottom:5%' id='hora91' type='time'><br> a <input style='width:89%;' id='hora92' type='time'><br><br>Cena
+                            <input style='width:100%;margin-bottom:5%' id='horc91' type='time'><br> a <input style='width:89%;' id='horc92' type='time'></td></tr>
+                        </table> 
+                    </div>
+                </div>
+
+        <!--DIV DEL NOMBRE Y LA DESCRIPCION --> 
+                <div class="col-sm-10">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th><h1 id="nombre"></h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td >
+                                            <textarea id="cajadescripcion" style="width:100%;resize:none;"  rows="6" placeholder="Descripcion"></textarea>
+                                            <p id="descripcion" style="text-align:justify;"></p>
+                                        </td>
+                                    </tr>    
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+
+        <!--DIV DE LOS PLATOS -->
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th colspan="8"><h1>Platos</h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="platos">
+                                    
+                                </tbody>
+                                <tr id="filabotonplatos">
+                                    <td><input type="button" onclick="agregarplatos()" value="Añadir" id="botonplatos"></td>
+                                </tr>
+                            </table> 
+                        </form>
+                    </div>
+                    
+        <!--DIV DE LA DIRECCION -->           
+                    <div class="well caja  form-group" style="overflow-x:auto">
+                        <form>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th><h1 style='display: inline;'>Dirección: </h1><h1 style='display: inline; color:grey;' id="direccion"></h1><input type="text" id="cajadireccion" placeholder="Direccion" style='width:75%;'></th>
+                                    </tr>
+                                </thead>
+                                <!--<tbody>
+                                    <tr>
+                                        <td><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3166.6203611471096!2d-5.648243184617539!3d37.469684579816246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd128b7d7ee95d13%3A0x8278aa32e8f16da2!2sCalle+Enmedio%2C+7%2C+41410+Carmona%2C+Sevilla!5e0!3m2!1ses!2ses!4v1495472663516" width="900" height="300" frameborder="0" style="border:0" allowfullscreen></iframe></td>
+                                    </tr>  
+                                </tbody>-->
+                            </table> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+    </body>
+</html>
+
+
+
+
+
+
+                                   <!-- <tr>
+                                        <td>
+                                            <ul class="list-unstyled list-inline">
+                                                <li>
+                                                    <img src="../Imagenes/especias.jpg" alt="" style="max-width: 150px"/>
+                                                </li>
+
+                                                <li style='margin-left:1%;'>
+                                                    <p>Huevo frito con patatas</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p title="illo tio">?</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="number" class="form-control input-sm">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="checkbox" value="">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                            <ul class="list-unstyled list-inline">
+                                                <li>
+                                                    <img src="../Imagenes/especias.jpg" alt="" style="max-width: 150px"/>
+                                                </li>
+
+                                                <li style='margin-left:1%;'>
+                                                    <p>Huevo frito con patatas</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p title="illo tio">?</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="number" class="form-control input-sm">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="checkbox" value="">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <ul class="list-unstyled list-inline">
+                                                <li>
+                                                    <img src="../Imagenes/especias.jpg" alt="" style="max-width: 150px"/>
+                                                </li>
+
+                                                <li style='margin-left:1%;'>
+                                                    <p>Huevo frito con patatas</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p title="">?</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="number" class="form-control input-sm">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <input type="checkbox" value="">
+                                                </li>
+                                                <li style='margin-left:1%;'>
+                                                    <p>50€</p>
+                                                </li>
+                                        </td>
+                                    </tr>-->

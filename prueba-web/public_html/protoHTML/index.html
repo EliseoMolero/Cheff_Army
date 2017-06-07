@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Firebase Web Quickstart</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,500" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1 id="bigTwo"></h1>
+        <h1 id="bigOne"></h1>
+        <div class="container">
+            <input id="txtEmail" type="email" placeholder="Email">
+            
+            <input id="txtPassword" type="password" placeholder="Password">
+            
+            <button id="btnLogin" class="btn btn-action">
+             Log in   
+            </button>
+            
+            <button id="btnSignUp" class="btn btn-secondary">
+             Sign Up   
+            </button>
+            
+            <button id="btnLogout" class="btn btn-action hide">
+             Log out   
+            </button>
+            <pre id="object"></pre>
+            <ul id="list">
+                
+            </ul>
+            <input id="txtNombre" type="text" placeholder="nombre">
+            <input id="txtRaza" type="text" placeholder="raza">
+            <button id="ingresar" onclick="writeDogData()">Ingresar</button>
+            <button id="mostrar" class="btn btn-action hide" onclick="pruebaOnce()">Mostrar</button>
+            <br>
+            <br>
+            <button id="mostrar" class="btn btn-action hide" onclick="obtener_usuario()">Obtener</button>
+            <input type="file" id="camera" name="camera"/>
+            <img id="frame" src="">
+            <img id="descarga" src="">
+            <button id="descargar" onclick="descargarImagen()">descargar imagen</button> 
+        </div>
+        <script src="app.js"></script>
+        <!--<script>
+            const auth = firebase.auth();
+            auth.signInWithEmailAndPassword(email, pass);
+            auth.createUserWithEmailAndPassword(email, pass);
+            auth.onAuthStateChanged(firebaseUser => {});        
+        </script>-->
+    </body>
+</html>

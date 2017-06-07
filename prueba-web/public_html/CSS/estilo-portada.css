@@ -1,0 +1,14 @@
+
+
+body{
+    background-image:url('../Imagenes/bg-wood.jpg');
+    width: 100%;
+    height: auto;
+}
+
+.centrar{
+    text-align: center;
+    float: left;
+}
+
+

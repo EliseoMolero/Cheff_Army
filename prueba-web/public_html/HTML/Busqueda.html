@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resultados Busqueda</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);              
+                } else {
+                    console.log('not logged in');
+                    location.href = "Login.html";
+                }
+            });
+
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+
+
+            function resultados(textoBusqueda) {
+                var usuRef = firebase.database().ref("usuarios");
+                var valor = "";
+                var clase1 = "well caja form-group";
+                var estilo = "overflow-x:auto";
+                var row = "row";
+                var col2 = "col-sm-2";
+                var estilo2 = "max-width: 150px";
+                var responsive = "img-responsive";
+                var col10 = "col-sm-10";
+                var urlImagen = "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg";
+                $("#busqueda").text(textoBusqueda);
+                var incremento = 0;
+                textoBusqueda = textoBusqueda.toLowerCase();
+
+                usuRef.once('value').then(function (snapshot) {
+                    var totalcount = snapshot.numChildren();
+                    console.log("numero de hijos: " + totalcount);
+
+
+                    usuRef.orderByChild("nombre").on("child_added", function (snapshot) {
+
+                        valor = snapshot.val().nombre;
+                        valor = valor.toLowerCase();
+
+
+                        if (valor.indexOf(textoBusqueda) !== -1) {
+                            console.log("coincide: " + valor);
+                            var nombre = snapshot.val().nombre;
+                            var edad = snapshot.val().edad;
+                            $("#resultadosdiv").append("<div class='" + clase1 + "' style='" + estilo + "'><div class='" + row + "'><div class='" + col2 + "'><img src='" + urlImagen + "' style='" + estilo2 + "' class='" + responsive + "'/></div><div class='" + col10 + "'><h4>" + nombre + "</h4><p>" + edad + "</p></div></div></div>");
+                            incremento++;
+                        } else {
+                            console.log("no coincide: " + valor);
+                            incremento++;
+                        }
+                        if (incremento == totalcount) {
+                            var count = $('#resultadosdiv').children().length;
+                            console.log("numero hijos: " + count);
+                            if (count < 3) {
+                                $("#resultadosdiv").append("<div class='" + clase1 + "' style='" + estilo + "'><div class='" + row + "'><h4>No se han encontrado resultados</h4></div></div>");
+                            }
+                        }
+
+                    });
+                });
+                //var result = [["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","Primera descripcion de el plato que llega de la base de datos"],["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","Segunda descripcion de el plato que llega de la base de datos"],["../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg","huevos con patatas","Tercera descripcion de el plato que llega de la base de datos"]];
+                //alert(result[0][0]+"//"+result[0][1]+"//"+result[0][2]+"//"+result[1][0]+"//"+result[1][1]+"//"+result[1][2]+"//"+result[2][0]+"//"+result[2][1]+"//"+result[2][2]);
+
+                /*if(result.length<1){
+                 $("#resultadosdiv").append("<div class='"+clase1+"' style='"+estilo+"'><div class='"+row+"'><h4>No se han encontrado resultados</h4></div></div>");
+                 }else{
+                 for(var i=0;i<result.length;i++){
+                 $("#resultadosdiv").append("<div class='"+clase1+"' style='"+estilo+"'><div class='"+row+"'><div class='"+col2+"'><img src='"+result[i][0]+"' style='"+estilo2+"' class='"+responsive+"'/></div><div class='"+col10+"'><h4>"+result[i][1]+"</h4><p>"+result[i][2]+"</p></div></div></div>");    
+                 }
+                 }*/
+            }
+
+            function llamada() {
+                var result = recogerValor();
+                resultados(result);
+            }
+
+
+            function recogerValor() {
+                var variable = location.search.substr(5);
+                return variable;
+            }
+
+        </script>
+    </head>
+
+    <body onload="llamada()">
+        <header>
+            <div class="row" style="margin-right: 0px;">
+                <div class="col-sm-12 well">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil chef.html">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Login.html">Loguear</a></li>
+                                            <li role="presentation"><button role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</button></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th><h1>Filtros:</h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> 
+                                            <h5>Tipo de cocina:</h5>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">India</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">China</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Aficana</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Japonesa</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Española</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Italiana</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5>Modalidad encargo:</h5>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Recoger</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Envio</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Chef en casa</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-10" id="resultadosdiv">
+                    <h1 style="text-align: left; color:grey">Resultado busqueda: <span id="busqueda" style="color:black"></span></h1><br>
+                </div>
+                <button onclick="recogerValor()">ecerrr</button>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+    </body>
+</html>

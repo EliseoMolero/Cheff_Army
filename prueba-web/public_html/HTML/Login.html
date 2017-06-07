@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Hammersmith+One' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+
+    <script>
+        var config = {
+            apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+            authDomain: "prueba-web-630ea.firebaseapp.com",
+            databaseURL: "https://prueba-web-630ea.firebaseio.com",
+            projectId: "prueba-web-630ea",
+            storageBucket: "gs://prueba-web-630ea.appspot.com",
+            messagingSenderId: "322979248019"
+          };
+          firebase.initializeApp(config);
+        
+    
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              console.log(user);
+              location.href="Portada.html";
+            } else {
+              console.log('not logged in');
+            }
+          });
+          
+        function comprobar(){
+            var usu = $('#usuario').val();
+            var con = $('#password').val();
+
+            if(con == "" || usu == ""){
+                alert("Debe rellenar todos los campos");
+            }else{
+                if(!usu.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$")){
+                    alert("El email no es valido");
+                }else{
+                    var promise = firebase.auth().signInWithEmailAndPassword(usu, con).catch(function(error) {
+                      // Handle Errors here.
+                      var errorCode = error.code;
+                      var errorMessage = error.message;
+                      // ...
+                    });
+                }
+            }
+        }
+    </script>
+    </head> 
+    <body>
+        <header>
+            <div class="row" style="margin-right: 0px;">
+                <div class="col-sm-12 well">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil chef.html">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Login.html">Loguear</a></li>
+                                            <li role="presentation"><button role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</button></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row vertical-center">
+                <div class="col-sm-4 well ">
+                    <form>
+                        <input type="text" class="form-control" name="usuario" placeholder="Usuario" id='usuario' value=""/>
+                        <br>
+                        <input type="password" class="form-control" name="password" placeholder="Contraseña" id='password' value=""/>
+                        <br>
+                        <input  class="form-control  btn-default" type="button" name="iniciar" value="Iniciar Sesión" id='iniciar' onclick="comprobar()"/>
+                        <br>
+                        <a id="en" href="Registro.html">Registrate gratis</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>     
+    </body>
+</html>
+

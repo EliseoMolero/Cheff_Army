@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Portada</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset-context/cssreset-context-min.css">
+        <link href="../CSS/estilo-portada.css" rel="stylesheet" type="text/css"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        
+        <script>
+            var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);              
+                } else {
+                    console.log('not logged in');
+                    location.href = "Login.html";
+                }
+            });
+
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+            
+            function cargar() {
+
+                var array = ["Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg", "Paco Pepe", "Carne con patatas", "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg"];
+
+                var estilo = "width: 50%";
+
+                $("#fila1").append("<div class='col-sm-3'><img src='" + array[2] + "' style='" + estilo + "'><h3>" + array[1] + "</h3><p>" + array[0] + "</p></div>");
+                $("#fila1").append("<div class='col-sm-3'><img src='" + array[5] + "' style='" + estilo + "'><h3>" + array[4] + "</h3><p>" + array[3] + "</p></div>");
+                $("#fila1").append("<div class='col-sm-3'><img src='" + array[8] + "' style='" + estilo + "'><h3>" + array[7] + "</h3><p>" + array[6] + "</p></div>");
+                $("#fila1").append("<div class='col-sm-3'><img src='" + array[11] + "' style='" + estilo + "'><h3>" + array[10] + "</h3><p>" + array[9] + "</p></div>");
+
+                $("#fila2").append("<div class='col-sm-3'><img src='" + array[14] + "' style='" + estilo + "'><h3>" + array[13] + "</h3><p>" + array[12] + "</p></div>");
+                $("#fila2").append("<div class='col-sm-3'><img src='" + array[17] + "' style='" + estilo + "'><h3>" + array[16] + "</h3><p>" + array[15] + "</p></div>");
+                $("#fila2").append("<div class='col-sm-3'><img src='" + array[20] + "' style='" + estilo + "'><h3>" + array[19] + "</h3><p>" + array[18] + "</p></div>");
+                $("#fila2").append("<div class='col-sm-3'><img src='" + array[23] + "' style='" + estilo + "'><h3>" + array[22] + "</h3><p>" + array[21] + "</p></div>");
+
+                $("#fila3").append("<div class='col-sm-3'><img src='" + array[26] + "' style='" + estilo + "'><h3>" + array[25] + "</h3><p>" + array[24] + "</p></div>");
+                $("#fila3").append("<div class='col-sm-3'><img src='" + array[29] + "' style='" + estilo + "'><h3>" + array[28] + "</h3><p>" + array[27] + "</p></div>");
+                $("#fila3").append("<div class='col-sm-3'><img src='" + array[32] + "' style='" + estilo + "'><h3>" + array[31] + "</h3><p>" + array[30] + "</p></div>");
+                $("#fila3").append("<div class='col-sm-3'><img src='" + array[35] + "' style='" + estilo + "'><h3>" + array[34] + "</h3><p>" + array[33] + "</p></div>");
+
+            }
+
+        </script>    
+    </head>
+
+    <body onload="cargar()">
+        <header>
+            <div class="row" style="margin-right: 0px;">
+                <div class="col-sm-12 well">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil chef.html">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Login.html">Loguear</a></li>
+                                            <li role="presentation"><button role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</button></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container-fluid centrar">
+            <div class="row" id="fila1">
+            </div>
+        </div>
+        <div class="container-fluid centrar">
+            <div class="row" id="fila2">
+            </div>
+        </div>  
+        <div class="container-fluid centrar">
+            <div class="row" id="fila3">
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+    </body>
+</html>
+
