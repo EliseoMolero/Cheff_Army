@@ -1,0 +1,61 @@
+* {
+    padding: 0;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    
+}
+
+body{
+    font-size: 16px;
+    font-family: 'Hammersmith One', sans-serif;
+    background-image: url("../Imagenes/especias.jpg");
+}
+
+.reg{
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 15%;
+    background: #795548;
+}
+
+form{
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    background: #fffff;
+    overflow: hidden;
+    box-shadow: 0 0 3px #01579B;
+    border-top: 4px solid #01579B; 
+}
+
+form input{
+    border: 1px solid #01579B;
+    border-radius:  2px;
+    padding: 16px;
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+    font-family: 'Hammersmith One', sans-serif;
+    color: #01579B;
+    background-color: #ffffff;
+}
+
+#en{
+    font-size: 14px;
+    text-align: center;
+    color: #cccccc;
+    width: 100%;
+    display: block;
+}
+
+hr{
+    margin-bottom:25px;
+}
+
+.check{
+    display: flex;
+    color: white;
+}
