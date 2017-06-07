@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estilo-ficha-cliente.css" rel="stylesheet" type="text/css"/>
+    </head>
+    
+    <body onload="llamada()">
+        <div class="container-fluid">
+            <header>
+                <div class="row">
+                    <div class="col-sm-12 well">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div  style="text-align: center;">
+                                    <img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-5" style="margin-top: 1.5%">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Buscar..." style="height: 40px">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+
+                                <ul class="list-unstyled list-inline">
+                                    <li><div class="dropdown">
+                                            <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                                <span class="caret"></span></p>
+                                            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Mi perfil</a></li>
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Mi perfil chef</a></li>
+                                                <li role="presentation" class="divider"></li>
+                                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Desloguearte</a></li>
+                                            </ul>
+                                        </div>
+
+                                    <li><p>Ayuda</p></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+            </header>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th><h1>Filtros:</h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> 
+                                            <h5>Tipo de cocina:</h5>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">India</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">China</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Aficana</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Japonesa</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Española</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="" >Italiana</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h5>Modalidad encargo:</h5>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Recoger</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Envio</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Chef en casa</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-10" id="resultadosdiv">
+                    <h1 style="text-align: left; color:grey">Resultado busqueda: <span id="busqueda" style="color:black"></span></h1><br>
+                </div>
+            </div>
+        </div>-->
+                <footer class=" well">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3" style="padding-left: 15%">
+                                <ul class="list-unstyled">
+                                    <li>Contacto:</li>
+                                    <li>Teléfono: 953698742</li>
+                                    <li>Móvil: 632145698</li>
+                                    <li>email: contacto@kodev.com</li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-3">
+                                <ul class="list-unstyled list-inline" style="text-align: right">
+                                    <li><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></li>
+
+                                    <li></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-3">
+                                <ul class="list-unstyled list-inline" style="text-align: left">
+
+                                    <li><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></li>
+                                    <li></li>
+                                    <li></li>
+                                </ul>
+                            </div>
+
+
+                            <div class="col-sm-2" style=" text-align: right">
+                                <ul class="list-unstyled">
+                                    <li>Web desarrollada por:</li>
+                                    <li>José Guillermo Ruiz Amat</li>
+                                    <li>Pilar Cuaresma Pozuelo</li>
+                                    <li>Ángel García López</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+                </div>
+            </footer>
+    </body>
+</html>
