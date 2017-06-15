@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resultados Busqueda</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estiloweb.css" rel="stylesheet" type="text/css"/>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="icon" type="image/png" href="../Imagenes/Chef Army Logo.png" />
+        <script>
+            var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);
+                    comprobarChef();
+                    var uid = firebase.auth().currentUser.uid;
+                    $("#perfilchef").attr("href","Perfil chef.html?var="+uid);
+                } else {
+                    console.log('not logged in');
+                    location.href = "index.html";
+                }
+            });
+
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                    location.href="index.html"
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+
+            function comprobarChef(){
+                var uid = firebase.auth().currentUser.uid;
+                console.log(uid);
+                firebase.database().ref('chefs/'+uid).once('value', function (snapshot){
+                    if (snapshot.val()!= null){
+                        console.log(snapshot.val());
+                        console.log("Ese usuario es chef");
+                    }else{
+                        console.log(snapshot.val());
+                        $('#menuChef').hide();
+                    }
+                });
+            }
+
+            function resultados(textoBusqueda) {
+                var chefRef = firebase.database().ref("chefs");
+                var platRef = firebase.database().ref("platos");
+                var valor = "";
+                var clase1 = "well caja form-group";
+                var estilo = "overflow-x:auto";
+                var row = "row";
+                var col2 = "col-sm-2";
+                var estilo2 = "max-width: 150px";
+                var responsive = "img-responsive";
+                var col10 = "col-sm-10";
+                var urlImagen = "../Imagenes/2e52ecb0051bcc6511ebc551e2abb629.jpg";
+                $("#busqueda").text(textoBusqueda);
+                var incremento = 0;
+                var palabra = textoBusqueda.split(" ");
+                var char = palabra[0].split('');
+                char[char.length-1]='z';
+                var junto = char.join('');
+                junto = junto.toLowerCase();
+                
+                var sumaTotalCount;
+                var totalcount1; 
+                var totalcount2; 
+      
+                chefRef.orderByChild("nombre").startAt(textoBusqueda).endAt(junto).once('value').then(function (snapshot) {
+                    totalcount1 = snapshot.numChildren();
+                    console.log("numero de hijos: " + totalcount1);
+                    var key = Object.keys(snapshot.val());
+                    
+                    for(var i=0; i<key.length; i++){
+                        var nombre = snapshot.val()[key[i]].nombre;
+                        var descripcion = snapshot.val()[key[i]].descripcion; 
+                        var imagen = snapshot.val()[key[i]].urlImagen;
+                        $("#resultadosdiv").append("<div class='" + clase1 + "' style='" + estilo + "'><div class='" + row + "'><div class='" + col2 + "'><img src='" + imagen + "' style='" + estilo2 + "' class='" + responsive + "'/></div><div class='" + col10 + "'><h4><a href='Perfil chef.html?var="+[key[i]]+"'>" + nombre + "</a></h4><p>" + descripcion + "</p></div></div></div>");
+                        
+                    }
+                });
+                
+                platRef.orderByChild("nombre_plato").startAt(textoBusqueda).endAt(junto).once('value').then(function (snapshot) {
+                    totalcount2 = snapshot.numChildren();
+                    console.log("numero de hijos: " + totalcount2);
+                    var key2 = Object.keys(snapshot.val());
+                    
+                    for(var i=0; i<key2.length; i++){
+                        var nombre = snapshot.val()[key2[i]].nombre_plato;
+                        var descripcion = snapshot.val()[key2[i]].descripcion; 
+                        var imagen = snapshot.val()[key2[i]].urlimagen_plato;
+                        var finalkey = key2[i].substring(0, key2[i].length-1);
+                        $("#resultadosdiv").append("<div class='" + clase1 + "' style='" + estilo + "'><div class='" + row + "'><div class='" + col2 + "'><img src='" + imagen + "' style='" + estilo2 + "' class='" + responsive + "'/></div><div class='" + col10 + "'><h4><a href='Perfil chef.html?var="+finalkey+"'>" + nombre + "</a></h4><p>" + descripcion + "</p></div></div></div>");
+                        
+                    }
+                });
+            }
+
+            function llamada() {
+                var result = recogerValor();
+                resultados(result);
+            }
+
+
+            function recogerValor() {
+                var variable = location.search.substr(5);
+                return variable;
+            }
+            
+            function pasarBusqueda() {
+                var textoBusqueda = $('#buscador').val();
+                location.href = "Busqueda.html?var=" + textoBusqueda;
+            }
+
+        </script>
+    </head>
+
+    <body onload="llamada()">
+        <header>
+            <div class="row well" style="margin-right: 0px;">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <a href="Portada.html"><img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control"  id="buscador" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default"  onclick="pasarBusqueda()" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Menu 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation" id="menuChef"><a role="menuitem" tabindex="-1"  id="perfilchef">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</a></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><a href="Ayuda.html">Ayuda</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="resultadosdiv">
+                    <h1 style="text-align: left; color:grey">Resultado busqueda: <span id="busqueda" style="color:black"></span></h1><br>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><a href="https://twitter.com/CheffArmy2017" target="_blank"><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></a></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><a href="https://www.facebook.com/CheffArmy-313972049025702/" target="_blank"><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></a></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+    </body>
+</html>

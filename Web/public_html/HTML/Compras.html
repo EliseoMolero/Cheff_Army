@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link href="../CSS/Estiloweb.css" rel="stylesheet" type="text/css"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <link rel="icon" type="image/png" href="../Imagenes/Chef Army Logo.png" />
+
+        <title>Proceso Compra</title>
+        <script>
+            var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);
+                    comprobarChef();
+                    var uid = firebase.auth().currentUser.uid;
+                    $("#perfilchef").attr("href","Perfil chef.html?var="+uid);
+                    calcular();
+                } else {
+                    console.log('not logged in');
+                    //location.href = "Login.html";
+                }
+            });
+
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                    location.href="index.html"
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+            
+            function comprobarChef(){
+                var uid = firebase.auth().currentUser.uid;
+                console.log(uid);
+                firebase.database().ref('chefs/'+uid).once('value', function (snapshot){
+                    if (snapshot.val()!= null){
+                        console.log(snapshot.val());
+                        console.log("Ese usuario es chef");
+                    }else{
+                        console.log(snapshot.val());
+                        $('#menuChef').hide();
+                    }
+                });
+            }
+            
+            function recogerValor() {
+                var variable = location.search.substr(5);
+                var resultados = variable.split(',');
+                return resultados;
+            }
+            
+            function calculartotal(precio,cantidad){
+                var calculo = precio*cantidad;
+                return calculo;
+            }
+            
+            var total=0;
+            function calcular(){
+                var megaarray = recogerValor();
+                var arrayordenado = [];
+                var modalidad = [];
+                if ((megaarray.length-1)%4==0){
+                    modalidad.push(megaarray[megaarray.length-1]);
+                }else{
+                    if ((megaarray.length-2)%4==0){
+                        modalidad.push(megaarray[megaarray.length-2]);
+                        modalidad.push(megaarray[megaarray.length-1]);
+                    }else{
+                        if((megaarray.length-3)%4==0){
+                            modalidad.push(megaarray[megaarray.length-3]);
+                            modalidad.push(megaarray[megaarray.length-2]);
+                            modalidad.push(megaarray[megaarray.length-1]);
+                        }
+                    }
+                }
+                generarmodalidad(modalidad);
+                
+                for(var i=0; i<megaarray.length-modalidad.length;i+=4){
+                    var subarray = [];
+                    subarray[0] = megaarray[0+i];
+                    subarray[1] = megaarray[1+i];
+                    subarray[2] = megaarray[2+i];
+                    subarray[3] = megaarray[3+i];
+                    subarray[4] = calculartotal(megaarray[2+i],megaarray[3+i]);
+                    total=total+ calculartotal(megaarray[2+i],megaarray[3+i]);
+                    arrayordenado.push(subarray);
+                }
+                generarTabla(arrayordenado);
+            }
+        
+            function generarmodalidad(modalidad){
+                for(var i=0;i<modalidad.length;i++){
+                    if(modalidad[i]=="Chef%20en%20casa"){
+                        $("#modo").append("<tr><td><input type='radio' id='modo"+i+"' name='modo' value='Chef en casa'>Chef en casa</td></tr>");
+                    }else{
+                        $("#modo").append("<tr><td><input type='radio' id='modo"+i+"' name='modo' value='"+modalidad[i]+"'>"+modalidad[i]+"</td></tr>");
+                    }
+                }
+            }
+            
+            function comprar(){
+                
+                if(!$('#Visa').is(':checked') && !$('#Efectivo').is(':checked') && !$('#Paypal').is(':checked')){
+                    alert('Debes seleccionar un método de pago');
+                    return;
+                }else{
+                    var cantidadModos = document.getElementById('modo').getElementsByTagName('input').length;
+                    var contador = 0;
+                    for (var i = 0; i < cantidadModos; i++){
+                        if($("input#modo"+i).is(':checked')){
+                            contador++; 
+                        }    
+                    }
+                    if (contador != 1){
+                        alert('Debe seleccionar un modo de obtención del pedido');
+                        return;
+                    } else{
+                        if($('#Paypal').is(':checked')){
+                            paypal();
+                        }else{
+                            alert('Ha realizado su compra con éxito');
+                        }
+                    }
+                }
+            }
+            
+            function pasarBusqueda() {
+                var textoBusqueda = $('#buscador').val();
+                location.href = "Busqueda.html?var=" + textoBusqueda;
+            }
+        
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="row well" style="margin-right: 0px;">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <a href="Portada.html"><img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control"  id="buscador" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default"  onclick="pasarBusqueda()" type="button" style="height: 40px"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Logearse/registrarse 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation" id="menuChef"><a role="menuitem" tabindex="-1"  id="perfilchef">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</a></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><p>Ayuda</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class=" table-responsive caja well">
+                        <table id="tablascript" class="table" >
+                            <tr>
+                                <th>Foto</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Precio Total</th>
+                            </tr>
+                        </table>
+                        <p style="text-align:right; margin-right: 10%;"><strong  id="total"></strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class=" table-responsive caja well">
+                        <div class="form-group">
+                            <p>Forma de pago</p>
+                            <label class="radio-inline"><input type="radio" id="Visa" name="metodo_pago">Visa</label>
+                            <label class="radio-inline"><input type="radio"  id="Efectivo" name="metodo_pago">Efectivo</label>
+                            <label class="radio-inline"><input type="radio"  id="Paypal" name="metodo_pago">Paypal</label>
+                            <br>
+                        </div>
+                        <br>
+                        <div class="form-group" id="modo">
+                            <p>Forma de entrega</p>
+                        </div>
+                        <input type="button" class="btn btn-default" value="Comprar" onclick="comprar()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><a href="https://twitter.com/CheffArmy2017" target="_blank"><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></a></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><a href="https://www.facebook.com/CheffArmy-313972049025702/" target="_blank"><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></a></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+        <form name='paypalform' method='post' action='https://www.paypal.com/cgi-bin/webscr'>
+ 
+            <input type='hidden' name='cmd' value='_xclick'>
+            <input type='hidden' name='business' value='ChefArmy2017@gmail.com'>
+            <input type='hidden' name='item_name' value='Compra ChefArmy'>
+            <input type='hidden' name='item_number' value='VENTA-X2561'>
+            <input type='hidden' id="totalpay" name='amount' value='10.15'>
+            <input type='hidden' name='page_style' value='paypal'>
+            <input type='hidden' name='no_shipping' value='2'>
+            <input type='hidden' name='return' value='vedrunasevilla.org/alumnos/cheffarmy/HTML/Portada.html'>
+            <input type='hidden' name='rm' value='2'>
+            <input type='hidden' name='cancel_return' value='vedrunasevilla.org/alumnos/cheffarmy/HTML/Portada.html'>
+            <input type='hidden' name='no_note' value='1'>
+            <input type='hidden' name='currency_code' value='EUR'>
+            <input type='hidden' name='cn' value='PP-BuyNowBF'>
+            <input type='hidden' name='custom' value=''>
+            <input type='hidden' name='first_name' value='NOMBRE'>
+            <input type='hidden' name='last_name' value='APELLIDOS'>
+            <input type='hidden' name='address1' value='DIRECCIÓN'>
+            <input type='hidden' name='city' value='POBLACIÓN'>
+            <input type='hidden' name='zip' value='CÓDIGO POSTAL'>
+            <input type='hidden' name='night_phone_a' value=''>
+            <input type='hidden' name='night_phone_b' value='TELÉFONO'>
+            <input type='hidden' name='night_phone_c' value=''>
+            <input type='hidden' name='lc' value='es'>
+            <input type='hidden' name='country' value='ES'>
+        </form>
+        <script>
+            function paypal(){
+                
+                document.paypalform.submit();
+            }
+            
+            var l=0;
+            function generarTabla(datos) {
+                console.log(datos);
+                $("#total").text("Suma total: "+total+"€");
+                $('#totalpay').val(total);
+                console.log($('#totalpay').val());
+                for (var i = 0; i < datos.length; i++) {
+                    $('#tablascript').append("<tr id='" + i + "'></tr>");
+
+                    for (var j = 0; j < datos[i].length; j++) {
+                        if (j == 0){
+                            $("#" + i).append("<td><img style='max-width: 150px' src=" + datos[i][j] + "/></td>");    
+                        }else{
+                            $("#" + i).append("<td>" + datos[i][j] + "</td>");
+                            l=i;
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

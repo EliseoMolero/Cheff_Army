@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mi Cliente</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset-context/cssreset-context-min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="../CSS/Estiloweb.css" rel="stylesheet" type="text/css"/>
+        <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <link rel="icon" type="image/png" href="../Imagenes/Chef Army Logo.png" />
+
+        <script>
+            var config = {
+                apiKey: "AIzaSyAuSjFHm2l6wBMdAtj-BTRor27Hnn_4Tns",
+                authDomain: "prueba-web-630ea.firebaseapp.com",
+                databaseURL: "https://prueba-web-630ea.firebaseio.com",
+                projectId: "prueba-web-630ea",
+                storageBucket: "gs://prueba-web-630ea.appspot.com",
+                messagingSenderId: "322979248019"
+            };
+            firebase.initializeApp(config);
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);
+                    comprobarChef();
+                    var uid = firebase.auth().currentUser.uid;
+                    $("#perfilchef").attr("href","Perfil chef.html?var="+uid);
+                    infopersonal();
+                } else {
+                    console.log('not logged in');
+                    location.href = "index.html";
+                }
+            });
+            
+            var tipoCuenta = "Cliente";
+            function comprobarChef(){
+                var uid = firebase.auth().currentUser.uid;
+                console.log(uid);
+                firebase.database().ref('chefs/'+uid).once('value', function (snapshot){
+                    if (snapshot.val()!= null){
+                        console.log(snapshot.val());
+                        console.log("Ese usuario es chef");
+                        $("#tipocuentap").text("Chef");
+                        tipoCuenta="Chef";
+                    }else{
+                        console.log(snapshot.val());
+                        $('#menuChef').hide();
+                        $("#tipocuentap").text("Cliente");
+                        tipoCuenta = "Cliente";
+                    }
+                });
+            }
+            
+            function desloguear() {
+                firebase.auth().signOut().then(function () {
+                    console.log("logued out");
+                    location.href="index.html"
+                }, function (error) {
+                    console.log("Error al desloguearse" + error);
+                });
+            }
+
+            function pasarBusqueda() {
+                var textoBusqueda = $('#buscador').val();
+                location.href = "Busqueda.html?var=" + textoBusqueda;
+            }
+
+            function infopersonal() {
+                var uid = firebase.auth().currentUser.uid;
+                firebase.database().ref('/clientes/' + uid).once('value').then(function (snapshot) {
+                    $("#nombre").text(snapshot.val().nombre);
+                    $("#apellidos").text(snapshot.val().apellidos);
+                    $("#dni").text(snapshot.val().dni);
+                    $("#edad").text(snapshot.val().edad);
+                    $("#calle").text(snapshot.val().calle);
+                    $("#provincia").text(snapshot.val().provincia);
+                    $("#numero").text(snapshot.val().numero);
+                    $("#cp").text(snapshot.val().cp);
+                    $("#pais").text(snapshot.val().pais);
+                    $("#localidad").text(snapshot.val().localidad);
+                    $("#imagen").attr("src", snapshot.val().urlImagen);
+                });
+            }
+
+            function infopersonalguardada(result) {
+                var uid = firebase.auth().currentUser.uid;
+                firebase.database().ref('clientes/' + uid).update({
+                    nombre: result[0].toLowerCase(),
+                    apellidos: result[1].toLowerCase(),
+                    dni: result[2],
+                    edad: result[3],
+                    calle: result[4],
+                    provincia: result[5],
+                    numero: result[6],
+                    cp: result[7],
+                    pais: result[8],
+                    localidad: result[9]
+                });
+                
+                if(tipoCuenta=="Chef"){
+                    firebase.database().ref('chefs/' + uid).update({
+                        nombre: result[0].toLowerCase()
+                    });
+                    if(result[10]==false){
+                        var numeroplatos;
+                        firebase.database().ref('chefs/'+uid+'/platos').once('value', function(snapshot){
+                            numeroplatos = snapshot.numChildren();
+                        });
+                        console.log(numeroplatos);
+                        firebase.database().ref('chefs/'+uid).set({
+                            nombre: null,
+                            descripcion: null,
+                            direccion: null,
+                            modalidad: null,
+                            horario: null,
+                            cps_distribucion: null,
+                            latitud: null,
+                            longitud: null,
+                            urlImagen: null,
+                            platos: null
+                        });
+
+                        for(var i=0;i<numeroplatos;i++){
+                            firebase.database().ref('platos/'+uid+i).set({
+                                descripcion: null,
+                                precio: null,
+                                nombre_plato: null,
+                                urlimagen_plato: null,
+                                autor: null
+                            });
+                        }
+                        tipoCuenta="Cliente";
+                    }
+                }else{
+                    if(result[10]==true){
+                       firebase.database().ref('chefs/'+uid).set({
+                            cps_distribucion:"",
+                            descripcion:"",
+                            direccion:"",
+                            horario:"",
+                            latitud:"",
+                            longitud:"",
+                            modalidad:"",
+                            nombre: result[0].toLowerCase(),
+                            platos:"",
+                            puntuacion:"",
+                            urlImagen:"https://firebasestorage.googleapis.com/v0/b/prueba-web-630ea.appspot.com/o/personne.png?alt=media&token=79af3359-42aa-472d-890a-05fb45c9fd88"
+                        });
+                        tipoCuenta="Chef";
+                    } 
+                }
+
+                conseguirUrl();
+
+                cancelar();
+                $("#nombre").text(result[0]);
+                $("#apellidos").text(result[1]);
+                $("#dni").text(result[2]);
+                $("#edad").text(result[3]);
+                $("#calle").text(result[4]);
+                $("#provincia").text(result[5]);
+                $("#numero").text(result[6]);
+                $("#cp").text(result[7]);
+                $("#pais").text(result[8]);
+                $("#localidad").text(result[9]);
+
+                $("#cambio").text("Editar");
+                $("#cancel").hide();
+                $("#selectorImagen").hide();
+                $("input").val("");
+                $("input").attr("style", "display: none");
+                $("#buscador").attr("style", "display: inline");
+                $("#buscador").attr("style", "height: 40px");
+            }
+
+            function edit() {
+                var estado = $("#cambio").text();
+                if (estado == "Editar") {
+                    $("#nombre").hide();
+                    $("#apellidos").hide();
+                    $("#dni").hide();
+                    $("#edad").hide();
+                    $("#calle").hide();
+                    $("#provincia").hide();
+                    $("#numero").hide();
+                    $("#cp").hide();
+                    $("#pais").hide();
+                    $("#localidad").hide();
+                    
+                    $("#nombreinput").val($("#nombre").text());
+                    $("#apellidosinput").val($("#apellidos").text());
+                    $("#dniinput").val($("#dni").text());
+                    $("#edadinput").val($("#edad").text());
+                    $("#calleinput").val($("#calle").text());
+                    $("#provinciainput").val($("#provincia").text());
+                    $("#numeroinput").val($("#numero").text());
+                    $("#cpinput").val($("#cp").text());
+                    $("#paisinput").val($("#pais").text());
+                    $("#localidadinput").val($("#localidad").text());
+
+                    $("input").attr("style", "display: inline");
+                    $("#buscador").attr("style", "height: 40px");
+                    $("#cambio").text("Guardar");
+                    $("#cancel").show();
+                    $("#tipocuenta").show();
+                    if (tipoCuenta=="Chef"){
+                        $("#tipocuenta").prop("checked", "checked");
+                    }
+                    $("#tipocuentap").text(tipoCuenta);
+                    $("#selectorImagen").show();
+                } else {
+                    comprobaciones();
+                }
+            }
+
+            // Get the download URL
+            function conseguirUrl() {
+                var file = document.getElementById("selectorImagen").files[0];
+                console.log(file);
+                if (file !== undefined) {                                                /////// ARREGLAR ESTA COMPROBACION: SI NO SE SELECCIONA UNA NUEVA IMAGEN PETA//////                  
+                    console.log("nombre de la imagen: " + file.name);
+
+                    var storageRef = firebase.storage().ref();
+                    var uploadTask = storageRef.child(file.name).put(file);
+
+                    uploadTask.on('state_changed', function (snapshot) {
+
+                    }, function (error) {
+                        alert("Fallo al subir la imagen");
+                        return;
+                    }, function () {
+
+                        storageRef.child(file.name).getDownloadURL().then(function (url) {
+                            var uid = firebase.auth().currentUser.uid;
+                            firebase.database().ref().child('clientes/' + uid).update({"urlImagen": url});
+                            if(tipoCuenta=="Chef"){
+                                firebase.database().ref('chefs/' + uid).update({"urlImagen": url});
+                                location.reload();
+                            }else{
+                                location.reload();
+                            }
+             
+                            console.log(url);
+                            $("#imagen").attr("src", url);
+                        });
+                    });
+                }
+            }
+
+            function comprobaciones() {
+                var nombre = $("#nombreinput").val();
+                var apellidos = $("#apellidosinput").val();
+                var dni = $("#dniinput").val();
+                dni = dni.toUpperCase();
+                var edad = $("#edadinput").val();
+                var calle = $("#calleinput").val();
+                var provincia = $("#provinciainput").val();
+                var numero = $("#numeroinput").val();
+                var cp = $("#cpinput").val();
+                var pais = $("#paisinput").val();
+                var localidad = $("#localidadinput").val();
+                var chef = false;
+
+                var patron = /^[a-zA-Z ñÑ.áÁéÉíÍóÓúÚäëïöü\'-]*$/;
+                var patroncp = /(^([0-9]{5,5})|^)$/;
+
+                if (nombre == "" || apellidos == "" || dni == "" || edad == "") {
+                    alert("Los campos de nombre, apellidos, dni y edad deben introducirse");
+                } else {
+                    if (!patron.test(nombre)) {
+                        alert("El nombre no es valido");
+                    } else {
+                        if (!patron.test(apellidos)) {
+                            alert("Los apellidos no son validos");
+                        } else {
+                            var vdni = nif(dni);
+                            if (vdni == null) {
+                                alert("El dni no es valido");
+                            } else if (vdni == false) {
+                                alert("La letra del dni no es valida");
+                            } else {
+                                if (!patron.test(calle)) {
+                                    alert("La calle no es válida");
+                                } else {
+                                    if (!patron.test(provincia)) {
+                                        alert("La provincia no es válida");
+                                    } else {
+                                        if (!patron.test(pais)) {
+                                            alert("El pais no es válido");
+                                        } else {
+                                            if (!patron.test(localidad)) {
+                                                alert("La localidad no es válida");
+                                            } else {
+                                                if (edad > 80 || edad < 15) {
+                                                    alert("La edad no es valida");
+                                                } else {
+                                                    if (!patroncp.test(cp)) {
+                                                        alert("El codigo postal no es válido");
+                                                    } else {
+                                                        if($("#tipocuenta").is(':checked')){
+                                                            chef=true;
+                                                        }
+                                                        var result = [nombre, apellidos, dni, edad, calle, provincia, numero, cp, pais, localidad, chef];
+                                                        infopersonalguardada(result);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            function nif(dni) {
+                var patrondni;
+                patrondni = /^\d{8}[a-zA-Z]$/;
+
+                if (patrondni.test(dni) == true) {
+                    var numero = dni.substr(0, dni.length - 1);
+                    var letr = dni.substr(dni.length - 1, 1);
+                    numero = numero % 23;
+                    var letra = 'TRWAGMYFPDXBNJZSQVHLCKET';
+                    letra = letra.substring(numero, numero + 1);
+                    if (letra != letr.toUpperCase()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return null;
+                }
+            }
+
+            function cancelar() {
+                $("#nombre").show();
+                $("#apellidos").show();
+                $("#dni").show();
+                $("#edad").show();
+                $("#calle").show();
+                $("#provincia").show();
+                $("#numero").show();
+                $("#cp").show();
+                $("#pais").show();
+                $("#localidad").show();
+
+                $("input").attr("style", "display: none");
+                $("#buscador").attr("style", "display: inline");
+                $("#buscador").attr("style", "height: 40px");
+                $("#cambio").text("Editar");
+                $("#cancel").hide();
+                $("#tipocuenta").hide();
+                $("#selectorImagen").hide();
+            }
+
+            function llamadas() {
+                $("#cancel").hide();
+                $("#selectorImagen").hide();
+                $("#tipocuenta").hide();
+            }
+
+        </script>
+    </head>
+    <body onload="llamadas()">
+        <header>
+            <div class="row well" style="margin-right: 0px;">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div  style="text-align: center;">
+                                <a href="Portada.html"><img src="../Imagenes/Chef Army Logo y tipografia.png" class="img-responsive" alt="" style=" width:60%; height: auto; margin-left: 16%"/></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-5" style="margin-top: 1.5%">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="buscador" placeholder="Buscar..." style="height: 40px">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" style="height: 40px" onclick="pasarBusqueda()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="margin-top: 2%; text-align:right">
+                            <ul class="list-unstyled list-inline">
+                                <li>
+                                    <div class="dropdown">
+                                        <p class="dropdown-toggle"  id="menu1" data-toggle="dropdown">Menu 
+                                            <span class="caret"></span></p>
+                                        <ul class="dropdown-menu" role="menu" id="menu" aria-labelledby="menu1">
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" href="Perfil cliente.html">Mi perfil</a></li>
+                                            <li role="presentation" id="menuChef"><a role="menuitem" tabindex="-1"  id="perfilchef">Mi perfil chef</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation"><a role="menuitem" tabindex="-1" onclick="desloguear()">Desloguear</a></li>
+                                        </ul>
+                                    </div>
+                                </li>    
+                                <li><a href="Ayuda.html">Ayuda</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="well caja"  style="text-align: center;">
+                        <img src="" style='width: 60%; height: auto;' id="imagen">
+                        <input type="file" style='margin-top:5%;' id='selectorImagen'>   
+                    </div>
+                    <div class="well caja"  style="text-align: center;">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th colspan="8">Tipo de Cuenta</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row">
+                                        <td>
+                                            <input type="checkbox" style='margin-top:5%;' id='tipocuenta'><p id="tipocuentap"></p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>  
+                    </div>
+                </div>
+                
+                <div class="col-sm-10">
+                    <div class="well caja form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th colspan="8"><h1>Datos personales</h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row">
+                                        <td><p class="datos" >Nombre:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="nombre" style="display: none" class="form-control input" id="nombreinput"><label class="label1" id="nombre"></label></td>
+                                        <td></td>
+                                        <td><p class="datos">DNI:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="DNI"  style="display: none" class="form-control input" id="dniinput"><label class="label1" id="dni"></label></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td><p class="datos">Apellidos:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="apellidos"  style="display: none" class="form-control input" id="apellidosinput"><label class="label1" id="apellidos"></label></td>
+                                        <td></td>
+                                        <td><p class="datos">Edad:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="number" name="edad"  style="display: none" class="form-control input" id="edadinput"><label class="label1" id="edad"></label></td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+
+                    <div class="well caja  form-group table-responsive" style="overflow-x:auto">
+                        <form>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="8"><h1>Dirección</h1></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><p class="datos">Calle:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="calle"  style="display: none" class="form-control input" id="calleinput"><label class="label1" id="calle"></label></td>
+                                        <td></td>
+                                        <td><p class="datos">Provincia:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="provincia"  style="display: none" class="form-control input" id="provinciainput"><label class="label1" id="provincia"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><p class="datos">Número:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="numero"  style="display: none" class="form-control input" id="numeroinput"><label class="label1" id="numero"></label></td>
+                                        <td></td>
+                                        <td><p class="datos">CP:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="cp"  style="display: none" class="form-control input" id="cpinput"><label class="label1" id="cp"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><p class="datos">Localidad:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="localidad"  style="display: none" class="form-control input" id="localidadinput"><label class="label1" id="localidad"></label></td>
+                                        <td></td>
+                                        <td><p class="datos">País:</p></td>
+                                        <td></td>
+                                        <td class="col-xs-6"><input type="text" name="pais"  style="display: none" class="form-control input" id="paisinput"><label class="label1" id="pais"></label></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" style="text-align: right"><button type="button" id="cambio" class=" btn btn-primary" onclick="edit()">Editar</button></td>
+                                        <td></td>
+                                        <td colspan="7" style="text-align: right"><button type="button" id="cancel" class=" btn btn-primary" onclick="cancelar()">Cancelar</button></td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class=" well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3" style="padding-left: 15%">
+                            <ul class="list-unstyled">
+                                <li>Contacto:</li>
+                                <li>Teléfono: 953698742</li>
+                                <li>Móvil: 632145698</li>
+                                <li>email: contacto@kodev.com</li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: right">
+                                <li><a href="https://twitter.com/CheffArmy2017" target="_blank"><button class="btn btn-twitter" style="background-color:#00aced"><i class="fa fa-twitter" style="font-size:110% ;color:white;"></i></button></a></li>
+
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-3">
+                            <ul class="list-unstyled list-inline" style="text-align: left">
+                                <li><a href=https://www.facebook.com/CheffArmy-313972049025702/" target="_blank"><button class="btn btn-facebook" style="background-color:#3b5998; width: 128%"><i class="fa fa-facebook" style="font-size:110% ;color:white;"></i></button></a></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2" style=" text-align: right">
+                            <ul class="list-unstyled">
+                                <li>Web desarrollada por:</li>
+                                <li>José Guillermo Ruiz Amat</li>
+                                <li>Pilar Cuaresma Pozuelo</li>
+                                <li>Ángel García López</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center"><p>Kodev S.L. all rights reserved 2017 Todos los derechos reservados.</p></div>
+            </div>
+        </footer>
+    </body>
+</html>
